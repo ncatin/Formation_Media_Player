@@ -30,6 +30,8 @@ class FormationMediaPlayerFrame: public wxFrame
 
         FormationMediaPlayerFrame(wxWindow* parent,wxWindowID id = -1);
         virtual ~FormationMediaPlayerFrame();
+        wxString* tempName;
+        wxColour* tempColor;
 
     private:
 
@@ -43,6 +45,8 @@ class FormationMediaPlayerFrame: public wxFrame
         void OnSlider1CmdScrollThumbTrack(wxScrollEvent& event);
         void OnSlider1CmdScrollThumbRelease(wxScrollEvent& event);
         void OnNDButtonClick(wxCommandEvent& event);
+        void OnPanel2Paint(wxPaintEvent& event);
+        void OnPanel2LeftDown(wxMouseEvent& event);
         //*)
 
         //(*Identifiers(FormationMediaPlayerFrame)
@@ -60,12 +64,14 @@ class FormationMediaPlayerFrame: public wxFrame
         static const long ID_STATUSBAR1;
         //*)
 
+
         wxPoint* draw;
         wxMediaCtrl* mediactrl1;
         int ConvertToTime(wxString time);
         bool SliderDragged, loaded;
         std::vector<std::unique_ptr<DancerDot>> dancers;
-        void DrawDot(DancerDot& dd);
+        void DrawDot(std::unique_ptr<DancerDot>& dd);
+        void NewDancer();
         friend class wxMediaPlayerTimer;
         friend class DancerCreatorWindowFrame;
         //(*Declarations(FormationMediaPlayerFrame)
