@@ -68,7 +68,7 @@ DancerCreatorWindowFrame::DancerCreatorWindowFrame(wxWindow* parent,wxWindowID i
     wxMenuBar* MenuBar1;
     wxMenu* Menu2;
 
-    frame_parent = (FormationMediaPlayerFrame *)this->GetParent();
+    frame_parent = (FormationMediaPlayerFrame *)parent;
 
     Create(parent, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("id"));
     GridBagSizer1 = new wxGridBagSizer(0, 0);
@@ -127,7 +127,8 @@ void DancerCreatorWindowFrame::OnAbout(wxCommandEvent& event)
 
 void DancerCreatorWindowFrame::OnOKClick(wxCommandEvent& event)
 {
-    frame_parent->dancers.emplace_back(new DancerDot(TextCtrl1->GetLineText(0), ColourPickerCtrl1->GetColour()));
-    frame_parent->DrawDot(*frame_parent->dancers.back());
+    *frame_parent->tempName = TextCtrl1->GetLineText(0);
+    *frame_parent->tempColor = ColourPickerCtrl1->GetColour();
+    frame_parent->NewDancer();
     this->Destroy();
 }
