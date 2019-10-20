@@ -15,7 +15,9 @@
 #include <memory>
 #include "DancerCreatorWindowMain.h"
 #include <wx/dcclient.h>
+#include <wx/dc.h>
 #include <wx/dcmemory.h>
+#include <wx/dragimag.h>
 //(*InternalHeaders(FormationMediaPlayerFrame)
 #include <wx/intl.h>
 #include <wx/string.h>
@@ -91,7 +93,11 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
 
     loaded = false;
 
-    draw = new wxPoint(70,70);
+    draw = new wxPoint(30,30);
+
+    tempName = new wxString();
+
+    tempColor = new wxColour();
     FlexGridSizer1 = new wxFlexGridSizer(2, 6, 4, 1);
     FlexGridSizer1->AddGrowableCol(0);
     FlexGridSizer1->AddGrowableRow(1);
@@ -144,6 +150,8 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     Connect(ID_SLIDER1,wxEVT_SCROLL_THUMBRELEASE,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnSlider1CmdScrollThumbRelease);
     Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnEnterTime);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnNDButtonClick);
+    Panel2->Connect(wxEVT_PAINT,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2Paint,0,this);
+    Panel2->Connect(wxEVT_LEFT_DOWN,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2LeftDown,0,this);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnQuit);
     Connect(idImportMusic,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnImportMusicSelected);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnAbout);
@@ -236,14 +244,51 @@ void FormationMediaPlayerFrame::OnNDButtonClick(wxCommandEvent& event)
     CreatorPopup->Show(true);
 }
 
-void FormationMediaPlayerFrame::DrawDot(DancerDot& dd){
-    wxMemoryDC dc(*dd.d_bmp);
-    dc.SetBrush(wxBrush(dd.d_color));
-    dc.DrawCircle(wxPoint(0,0), 70);
-    dc.DrawText(dd.d_name, wxPoint(0,0));
+void FormationMediaPlayerFrame::DrawDot(std::unique_ptr<DancerDot>& dd){
+    wxCoord h, w;
+
+    wxMemoryDC dc(*dd->d_bmp);
+    dc.SetBackground(*wxTRANSPARENT_BRUSH);
+    dc.Clear();
+    dc.SetBrush(wxBrush(dd->d_color));
+    dc.DrawCircle(wxPoint(35,35), 35);
+
+    dc.GetTextExtent(dd->d_name, &h, &w);
+    dc.DrawText(dd->d_name, wxPoint(35 - (h/2),35 - (w/2)));
     dc.SelectObject(wxNullBitmap);
-    wxClientDC cdc(Panel2);
-    cdc.DrawBitmap(*dd.d_bmp, *draw);
+
+    wxClientDC pdc(Panel2);
+    pdc.DrawBitmap(*dd->d_bmp, *draw);
+    draw->y = draw->y + 100;
 }
 
+void FormationMediaPlayerFrame::OnPanel2Paint(wxPaintEvent& event)
+{
+    wxPaintDC pdc(Panel2);
+    for(auto &x : dancers){
+        pdc.DrawBitmap(*x->d_bmp, *draw);
+        draw->y = draw->y + 70;
+    }
+    event.Skip();
 
+}
+
+void FormationMediaPlayerFrame::NewDancer(){
+    dancers.emplace_back(new DancerDot(*tempName, *tempColor));
+    DrawDot(dancers.back());
+    //Refresh();
+}
+
+void FormationMediaPlayerFrame::OnPanel2LeftDown(wxMouseEvent& event)
+{
+    for(auto&& x : dancers){
+        if(x->Contains(event.GetPosition())){
+            x->d_drag->BeginDrag(event.GetPosition(), Panel2, true);
+            x->d_drag->Show();
+            x->d_drag->Move(wxGetMousePosition());
+            if(event.LeftUp()){
+                x->d_drag->EndDrag();
+            }
+        }
+    }
+}
