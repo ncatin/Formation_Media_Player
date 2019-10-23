@@ -18,6 +18,9 @@
 #include <wx/dc.h>
 #include <wx/dcmemory.h>
 #include <wx/dragimag.h>
+#include <wx/generic/dragimgg.h>
+#include <wx/utils.h>
+#include <wx/dcscreen.h>
 //(*InternalHeaders(FormationMediaPlayerFrame)
 #include <wx/intl.h>
 #include <wx/string.h>
@@ -95,6 +98,8 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
 
     draw = new wxPoint(30,30);
 
+    draw_panel1 = new wxPoint(0,0);
+
     tempName = new wxString();
 
     tempColor = new wxColour();
@@ -115,11 +120,11 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     GridBagSizer1->Add(TextCtrl1, wxGBPosition(2, 3), wxDefaultSpan, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
     TextCtrl2 = new wxTextCtrl(this, ID_TEXTCTRL2, _("Time"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
     GridBagSizer1->Add(TextCtrl2, wxGBPosition(2, 4), wxDefaultSpan, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
-    Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(657,306), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
+    Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(707,391), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     GridBagSizer1->Add(Panel1, wxGBPosition(0, 0), wxGBSpan(2, 5), wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button3 = new wxButton(this, ID_BUTTON3, _("New Dancer"), wxDefaultPosition, wxSize(111,23), 0, wxDefaultValidator, _T("ID_BUTTON3"));
     GridBagSizer1->Add(Button3, wxGBPosition(0, 5), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    Panel2 = new wxPanel(this, ID_PANEL2, wxDefaultPosition, wxSize(143,264), wxTAB_TRAVERSAL|wxVSCROLL, _T("ID_PANEL2"));
+    Panel2 = new wxPanel(this, ID_PANEL2, wxDefaultPosition, wxSize(143,333), wxTAB_TRAVERSAL|wxVSCROLL, _T("ID_PANEL2"));
     GridBagSizer1->Add(Panel2, wxGBPosition(1, 5), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(GridBagSizer1, 1, wxALL|wxEXPAND|wxFIXED_MINSIZE, 5);
     SetSizer(FlexGridSizer1);
@@ -149,9 +154,10 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     Connect(ID_SLIDER1,wxEVT_SCROLL_THUMBTRACK,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnSlider1CmdScrollThumbTrack);
     Connect(ID_SLIDER1,wxEVT_SCROLL_THUMBRELEASE,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnSlider1CmdScrollThumbRelease);
     Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnEnterTime);
+    Panel1->Connect(wxEVT_PAINT,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2Paint,0,this);
+    Panel1->Connect(wxEVT_LEFT_DOWN,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2LeftDown,0,this);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnNDButtonClick);
-    Panel2->Connect(wxEVT_PAINT,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2Paint,0,this);
-    Panel2->Connect(wxEVT_LEFT_DOWN,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2LeftDown,0,this);
+    Panel2->Connect(wxEVT_LEFT_DCLICK,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2LeftDoubleClick,0,this);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnQuit);
     Connect(idImportMusic,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnImportMusicSelected);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnAbout);
@@ -244,30 +250,34 @@ void FormationMediaPlayerFrame::OnNDButtonClick(wxCommandEvent& event)
     CreatorPopup->Show(true);
 }
 
-void FormationMediaPlayerFrame::DrawDot(std::unique_ptr<DancerDot>& dd){
+void FormationMediaPlayerFrame::DrawDot(std::shared_ptr<DancerDot>& dd){
     wxCoord h, w;
 
     wxMemoryDC dc(*dd->d_bmp);
     dc.SetBackground(*wxTRANSPARENT_BRUSH);
     dc.Clear();
     dc.SetBrush(wxBrush(dd->d_color));
-    dc.DrawCircle(wxPoint(35,35), 35);
+    dc.DrawCircle(wxPoint(25,25), 25);
 
     dc.GetTextExtent(dd->d_name, &h, &w);
-    dc.DrawText(dd->d_name, wxPoint(35 - (h/2),35 - (w/2)));
+    dc.DrawText(dd->d_name, wxPoint(25 - (h/2),25 - (w/2)));
     dc.SelectObject(wxNullBitmap);
 
+    dd->d_area = new wxRect(*draw, wxPoint(draw->x+50, draw->y+50));
+    dd->d_P1bmp = new wxBitmap(dd->d_bmp->GetSubBitmap(wxRect(0,0, dd->d_bmp->GetWidth(), dd->d_bmp->GetHeight())));
+    dd->d_drag = new wxGenericDragImage(*dd->d_P1bmp);
     wxClientDC pdc(Panel2);
     pdc.DrawBitmap(*dd->d_bmp, *draw);
-    draw->y = draw->y + 100;
+    draw->y = draw->y + 60;
 }
 
 void FormationMediaPlayerFrame::OnPanel2Paint(wxPaintEvent& event)
 {
-    wxPaintDC pdc(Panel2);
+    wxPaintDC pdc(Panel1);
     for(auto &x : dancers){
-        pdc.DrawBitmap(*x->d_bmp, *draw);
-        draw->y = draw->y + 70;
+        if(x->DrawnOnP1) x->d_drag->DoDrawImage(pdc, *x->d_P1point);
+        //pdc.DrawBitmap(*x->d_P1bmp, *x->d_P1point);
+        //draw->y = draw->y + 70;
     }
     event.Skip();
 
@@ -281,14 +291,67 @@ void FormationMediaPlayerFrame::NewDancer(){
 
 void FormationMediaPlayerFrame::OnPanel2LeftDown(wxMouseEvent& event)
 {
-    for(auto&& x : dancers){
+
+    int counter, mouseX, mouseY;
+    wxPoint pos;
+    wxClientDC sdc(Panel1);
+    DancerDot* DragPointer = NULL;
+
+    for(auto x : dancers){
         if(x->Contains(event.GetPosition())){
-            x->d_drag->BeginDrag(event.GetPosition(), Panel2, true);
-            x->d_drag->Show();
-            x->d_drag->Move(wxGetMousePosition());
-            if(event.LeftUp()){
-                x->d_drag->EndDrag();
-            }
+            DragPointer = x.get();
         }
     }
+    if(DragPointer != NULL){
+       DragPointer->d_drag->BeginDrag(wxPoint(0,0)/*DragPointer->d_area_p1.GetTopLeft()*/, Panel1, false);
+       DragPointer->d_drag->Hide();
+       while(wxGetMouseState().LeftIsDown()){
+            wxGetMousePosition(&mouseX, &mouseY);
+            pos.x = mouseX;
+            pos.y = mouseY;
+            pos = this->ScreenToClient(pos);
+
+            DragPointer->d_drag->Move(pos);
+            DragPointer->d_drag->Show();
+            counter++;
+            if(!(counter%10)) wxYieldIfNeeded();
+
+
+        }
+        DragPointer->d_drag->EndDrag();
+        *DragPointer->d_P1point = this->ScreenToClient(wxGetMousePosition());
+        DragPointer->d_area_p1 = DragPointer->d_drag->GetImageRect(*DragPointer->d_P1point);//wxRect(*DragPointer->d_P1point, wxPoint(DragPointer->d_P1point->x + 50, DragPointer->d_P1point->y + 50));
+        Panel1->Refresh();
+
+
+     }
+
+
+}
+
+void FormationMediaPlayerFrame::OnPanel2LeftDoubleClick(wxMouseEvent& event)
+{
+
+   DancerDot* DragPointer = NULL;
+
+    for(auto x : dancers){
+        if(x->Contains(event.GetPosition())){
+            DragPointer = x.get();
+        }
+    }
+
+    wxClientDC p1dc(Panel1);
+    if(DragPointer != NULL && !(DragPointer->DrawnOnP1)){
+        p1dc.DrawBitmap(*DragPointer->d_P1bmp, *draw_panel1);
+        DragPointer->DrawnOnP1 = true;
+        DragPointer->d_P1point = new wxPoint(*draw_panel1);
+        DragPointer->d_area_p1 = wxRect(*DragPointer->d_P1point, wxPoint(DragPointer->d_P1point->x + 50, DragPointer->d_P1point->y + 50));
+        if(draw_panel1->y + 85 < Panel1->GetMinHeight()){
+            draw_panel1->y = draw_panel1->y + 50;
+        }else{
+            draw_panel1->y = 0;
+            draw_panel1->x = draw_panel1->x + 50;
+        }
+    }
+
 }
