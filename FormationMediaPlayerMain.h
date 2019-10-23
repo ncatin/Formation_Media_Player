@@ -47,6 +47,7 @@ class FormationMediaPlayerFrame: public wxFrame
         void OnNDButtonClick(wxCommandEvent& event);
         void OnPanel2Paint(wxPaintEvent& event);
         void OnPanel2LeftDown(wxMouseEvent& event);
+        void OnPanel2LeftDoubleClick(wxMouseEvent& event);
         //*)
 
         //(*Identifiers(FormationMediaPlayerFrame)
@@ -66,11 +67,12 @@ class FormationMediaPlayerFrame: public wxFrame
 
 
         wxPoint* draw;
+        wxPoint* draw_panel1;
         wxMediaCtrl* mediactrl1;
         int ConvertToTime(wxString time);
         bool SliderDragged, loaded;
-        std::vector<std::unique_ptr<DancerDot>> dancers;
-        void DrawDot(std::unique_ptr<DancerDot>& dd);
+        std::vector<std::shared_ptr<DancerDot>> dancers;
+        void DrawDot(std::shared_ptr<DancerDot>& dd);
         void NewDancer();
         friend class wxMediaPlayerTimer;
         friend class DancerCreatorWindowFrame;
