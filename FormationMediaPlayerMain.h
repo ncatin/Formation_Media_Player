@@ -48,6 +48,9 @@ class FormationMediaPlayerFrame: public wxFrame
         void OnPanel2Paint(wxPaintEvent& event);
         void OnPanel2LeftDown(wxMouseEvent& event);
         void OnPanel2LeftDoubleClick(wxMouseEvent& event);
+        void OnFormationModeSelected(wxCommandEvent& event);
+        void OnTransitionModeSelected(wxCommandEvent& event);
+        void OnPanel2Paint1(wxPaintEvent& event);
         //*)
 
         //(*Identifiers(FormationMediaPlayerFrame)
@@ -61,6 +64,10 @@ class FormationMediaPlayerFrame: public wxFrame
         static const long ID_PANEL2;
         static const long idMenuQuit;
         static const long idImportMusic;
+        static const long idMenuFormation;
+        static const long idMenuTransition ;
+        static const long ID_MENUITEM1;
+        static const long idNewTransition;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
         //*)
@@ -70,7 +77,8 @@ class FormationMediaPlayerFrame: public wxFrame
         wxPoint* draw_panel1;
         wxMediaCtrl* mediactrl1;
         int ConvertToTime(wxString time);
-        bool SliderDragged, loaded;
+        bool SliderDragged, loaded, mode, adding_transition;
+        DancerDot* transition_edit;
         std::vector<std::shared_ptr<DancerDot>> dancers;
         void DrawDot(std::shared_ptr<DancerDot>& dd);
         void NewDancer();
@@ -78,12 +86,17 @@ class FormationMediaPlayerFrame: public wxFrame
         friend class DancerCreatorWindowFrame;
         //(*Declarations(FormationMediaPlayerFrame)
         wxSlider* Slider1;
+        wxMenuItem* MenuItem7;
+        wxMenuItem* MenuItem5;
+        wxMenu* Menu3;
         wxButton* Button1;
+        wxMenu* MenuItem4;
         wxPanel* Panel1;
         wxButton* Button2;
         wxMenuItem* MenuItem3;
         wxButton* Button3;
         wxStatusBar* StatusBar1;
+        wxMenuItem* MenuItem6;
         wxTextCtrl* TextCtrl2;
         wxTextCtrl* TextCtrl1;
         wxPanel* Panel2;
