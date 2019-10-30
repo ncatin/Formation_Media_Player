@@ -12,6 +12,7 @@ public:
       d_color = color;
       d_bmp = new wxBitmap(50, 50);
       DrawnOnP1 = false;
+      transition_select = false;
   }
 
   bool Contains(wxPoint pnt){
@@ -33,7 +34,7 @@ private:
   wxRect* d_area;
   wxRect d_area_p1;
   wxGenericDragImage* d_drag;
-  bool DrawnOnP1;
+  bool DrawnOnP1, transition_select;
   wxPoint* d_P1point;
 
   std::vector<Transition> transition;
