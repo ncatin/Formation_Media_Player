@@ -36,6 +36,7 @@ private:
   wxGenericDragImage* d_drag;
   bool DrawnOnP1, transition_select;
   wxPoint* d_P1point;
+  std::vector<wxPoint> Transition_Points;
 
   std::vector<Transition> transition;
 
