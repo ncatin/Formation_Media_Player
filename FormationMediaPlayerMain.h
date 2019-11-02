@@ -16,6 +16,7 @@
 #include <wx/textctrl.h>
 #include <wx/slider.h>
 #include <wx/panel.h>
+#include <wx/choice.h>
 #include <wx/gbsizer.h>
 #include <wx/button.h>
 #include <wx/frame.h>
@@ -51,6 +52,8 @@ class FormationMediaPlayerFrame: public wxFrame
         void OnFormationModeSelected(wxCommandEvent& event);
         void OnTransitionModeSelected(wxCommandEvent& event);
         void OnPanel2Paint1(wxPaintEvent& event);
+        void OnNewFormationSelected(wxCommandEvent& event);
+        void OnChoice1Select(wxCommandEvent& event);
         //*)
 
         //(*Identifiers(FormationMediaPlayerFrame)
@@ -62,28 +65,31 @@ class FormationMediaPlayerFrame: public wxFrame
         static const long ID_PANEL1;
         static const long ID_BUTTON3;
         static const long ID_PANEL2;
+        static const long ID_CHOICE1;
         static const long idMenuQuit;
         static const long idImportMusic;
         static const long idMenuFormation;
         static const long idMenuTransition ;
         static const long ID_MENUITEM1;
-        static const long idNewTransition;
+        static const long idNewFormation;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
         //*)
 
-
+        wxString Formation_Name;
+        int choice;
         wxPoint* draw;
         wxPoint* draw_panel1;
         wxMediaCtrl* mediactrl1;
         int ConvertToTime(wxString time);
         bool SliderDragged, loaded, mode, adding_transition;
-        DancerDot* transition_edit;
         std::vector<std::shared_ptr<DancerDot>> dancers;
         void DrawDot(std::shared_ptr<DancerDot>& dd);
         void NewDancer();
+        void NewFormation();
         friend class wxMediaPlayerTimer;
         friend class DancerCreatorWindowFrame;
+        friend class AddTransitionMenuFrame;
         //(*Declarations(FormationMediaPlayerFrame)
         wxSlider* Slider1;
         wxMenuItem* MenuItem7;
@@ -100,6 +106,7 @@ class FormationMediaPlayerFrame: public wxFrame
         wxTextCtrl* TextCtrl2;
         wxTextCtrl* TextCtrl1;
         wxPanel* Panel2;
+        wxChoice* Choice1;
         //*)
 
         DECLARE_EVENT_TABLE()
