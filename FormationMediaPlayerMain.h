@@ -25,6 +25,11 @@
 #include <wx/mediactrl.h>
 #include <memory>
 #include "DancerDot.h"
+#include "json.hpp"
+#include <iostream>
+#include <fstream>
+using json = nlohmann::json;
+
 class FormationMediaPlayerFrame: public wxFrame
 {
     public:
@@ -54,6 +59,10 @@ class FormationMediaPlayerFrame: public wxFrame
         void OnPanel2Paint1(wxPaintEvent& event);
         void OnNewFormationSelected(wxCommandEvent& event);
         void OnChoice1Select(wxCommandEvent& event);
+        void OnExportImageSelected(wxCommandEvent& event);
+        void OnFileSaveSelected(wxCommandEvent& event);
+        void OnSaveFormationSelected(wxCommandEvent& event);
+        void OnFileLoadSelected(wxCommandEvent& event);
         //*)
 
         //(*Identifiers(FormationMediaPlayerFrame)
@@ -68,14 +77,19 @@ class FormationMediaPlayerFrame: public wxFrame
         static const long ID_CHOICE1;
         static const long idMenuQuit;
         static const long idImportMusic;
+        static const long idExportImage;
+        static const long idSave;
+        static const long idLoad;
         static const long idMenuFormation;
         static const long idMenuTransition ;
         static const long ID_MENUITEM1;
         static const long idNewFormation;
+        static const long idSaveFormation;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
         //*)
 
+        json j, dd;
         wxString Formation_Name;
         int choice;
         wxPoint* draw;
@@ -83,21 +97,27 @@ class FormationMediaPlayerFrame: public wxFrame
         wxMediaCtrl* mediactrl1;
         int ConvertToTime(wxString time);
         bool SliderDragged, loaded, mode, adding_transition;
+        std::fstream file;
+
         std::vector<std::shared_ptr<DancerDot>> dancers;
         void DrawDot(std::shared_ptr<DancerDot>& dd);
         void NewDancer();
         void NewFormation();
+        void Save();
         friend class wxMediaPlayerTimer;
         friend class DancerCreatorWindowFrame;
         friend class AddTransitionMenuFrame;
         //(*Declarations(FormationMediaPlayerFrame)
         wxSlider* Slider1;
+        wxMenuItem* MenuItem8;
         wxMenuItem* MenuItem7;
         wxMenuItem* MenuItem5;
         wxMenu* Menu3;
         wxButton* Button1;
+        wxMenuItem* MenuItem11;
         wxMenu* MenuItem4;
         wxPanel* Panel1;
+        wxMenuItem* MenuItem10;
         wxButton* Button2;
         wxMenuItem* MenuItem3;
         wxButton* Button3;
@@ -106,6 +126,7 @@ class FormationMediaPlayerFrame: public wxFrame
         wxTextCtrl* TextCtrl2;
         wxTextCtrl* TextCtrl1;
         wxPanel* Panel2;
+        wxMenuItem* MenuItem9;
         wxChoice* Choice1;
         //*)
 
