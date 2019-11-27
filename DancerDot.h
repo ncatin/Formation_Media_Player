@@ -13,6 +13,7 @@ public:
       d_bmp = new wxBitmap(50, 50);
       DrawnOnP1 = false;
       transition_select = false;
+      d_P1point = wxDefaultPosition;
   }
 
   bool Contains(wxPoint pnt){
@@ -24,7 +25,6 @@ public:
       delete d_bmp;
       delete d_area;
       delete d_drag;
-      delete d_P1point;
   }
 private:
   wxString d_name;
@@ -35,11 +35,8 @@ private:
   wxRect d_area_p1;
   wxGenericDragImage* d_drag;
   bool DrawnOnP1, transition_select;
-  wxPoint* d_P1point;
+  wxPoint d_P1point;
   std::vector<wxPoint> Transition_Points;
-
-  std::vector<Transition> transition;
-
 
 
   friend class FormationMediaPlayerFrame;
