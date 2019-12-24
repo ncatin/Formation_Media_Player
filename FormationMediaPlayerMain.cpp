@@ -65,8 +65,9 @@ const long FormationMediaPlayerFrame::ID_TEXTCTRL1 = wxNewId();
 const long FormationMediaPlayerFrame::ID_TEXTCTRL2 = wxNewId();
 const long FormationMediaPlayerFrame::ID_PANEL1 = wxNewId();
 const long FormationMediaPlayerFrame::ID_BUTTON3 = wxNewId();
-const long FormationMediaPlayerFrame::ID_PANEL2 = wxNewId();
+const long FormationMediaPlayerFrame::ID_BITMAPCOMBOBOX1 = wxNewId();
 const long FormationMediaPlayerFrame::ID_CHOICE1 = wxNewId();
+const long FormationMediaPlayerFrame::ID_BUTTON4 = wxNewId();
 const long FormationMediaPlayerFrame::idMenuQuit = wxNewId();
 const long FormationMediaPlayerFrame::idImportMusic = wxNewId();
 const long FormationMediaPlayerFrame::idExportImage = wxNewId();
@@ -92,6 +93,7 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     //(*Initialize(FormationMediaPlayerFrame)
     wxMenuItem* MenuItem2;
     wxGridBagSizer* GridBagSizer1;
+    wxGridBagSizer* GridBagSizer2;
     wxMenuItem* MenuItem1;
     wxMenu* Menu1;
     wxMenuBar* MenuBar1;
@@ -120,6 +122,7 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
 
     tempColor = new wxColour();
 
+    //Panel2->SetScrollbar(wxVERTICAL, 0, 16, 50);
     FlexGridSizer1 = new wxFlexGridSizer(2, 6, 4, 1);
     FlexGridSizer1->AddGrowableCol(0);
     FlexGridSizer1->AddGrowableRow(1);
@@ -130,21 +133,27 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     GridBagSizer1->Add(Button1, wxGBPosition(2, 0), wxDefaultSpan, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
     Button2 = new wxButton(this, ID_BUTTON2, _("Pause"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
     GridBagSizer1->Add(Button2, wxGBPosition(2, 1), wxDefaultSpan, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
-    Slider1 = new wxSlider(this, ID_SLIDER1, 0, 0, 100, wxDefaultPosition, wxSize(129,24), 0, wxDefaultValidator, _T("ID_SLIDER1"));
+    Slider1 = new wxSlider(this, ID_SLIDER1, 0, 0, 100, wxDefaultPosition, wxSize(239,24), 0, wxDefaultValidator, _T("ID_SLIDER1"));
     GridBagSizer1->Add(Slider1, wxGBPosition(2, 2), wxDefaultSpan, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
     TextCtrl1 = new wxTextCtrl(this, ID_TEXTCTRL1, _("Filename"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     TextCtrl1->SetEditable(false);
     GridBagSizer1->Add(TextCtrl1, wxGBPosition(2, 3), wxDefaultSpan, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
     TextCtrl2 = new wxTextCtrl(this, ID_TEXTCTRL2, _("Time"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
     GridBagSizer1->Add(TextCtrl2, wxGBPosition(2, 4), wxDefaultSpan, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
-    Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(707,391), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
-    GridBagSizer1->Add(Panel1, wxGBPosition(0, 0), wxGBSpan(2, 5), wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxSize(894,590), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
+    GridBagSizer1->Add(Panel1, wxGBPosition(0, 0), wxGBSpan(2, 5), wxALL|wxEXPAND, 5);
+    GridBagSizer2 = new wxGridBagSizer(0, 0);
     Button3 = new wxButton(this, ID_BUTTON3, _("New Dancer"), wxDefaultPosition, wxSize(111,23), 0, wxDefaultValidator, _T("ID_BUTTON3"));
-    GridBagSizer1->Add(Button3, wxGBPosition(0, 5), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    Panel2 = new wxPanel(this, ID_PANEL2, wxDefaultPosition, wxSize(143,333), wxTAB_TRAVERSAL|wxVSCROLL, _T("ID_PANEL2"));
-    GridBagSizer1->Add(Panel2, wxGBPosition(1, 5), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    GridBagSizer2->Add(Button3, wxGBPosition(0, 0), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BitmapComboBox1 = new wxBitmapComboBox(this, ID_BITMAPCOMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY, wxDefaultValidator, _T("ID_BITMAPCOMBOBOX1"));
+    BitmapComboBox1->SetExtraStyle( BitmapComboBox1->GetExtraStyle() | wxWS_EX_BLOCK_EVENTS );
+    GridBagSizer2->Add(BitmapComboBox1, wxGBPosition(4, 0), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Choice1 = new wxChoice(this, ID_CHOICE1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
-    GridBagSizer1->Add(Choice1, wxGBPosition(2, 5), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Choice1->SetHelpText(_("Formations"));
+    GridBagSizer2->Add(Choice1, wxGBPosition(7, 0), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button4 = new wxButton(this, ID_BUTTON4, _("Add Dancer"), wxDefaultPosition, wxSize(111,23), 0, wxDefaultValidator, _T("ID_BUTTON4"));
+    GridBagSizer2->Add(Button4, wxGBPosition(2, 0), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    GridBagSizer1->Add(GridBagSizer2, wxGBPosition(0, 5), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer1->Add(GridBagSizer1, 1, wxALL|wxEXPAND|wxFIXED_MINSIZE, 5);
     SetSizer(FlexGridSizer1);
     MenuBar1 = new wxMenuBar();
@@ -194,9 +203,9 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     Panel1->Connect(wxEVT_PAINT,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2Paint,0,this);
     Panel1->Connect(wxEVT_LEFT_DOWN,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2LeftDown,0,this);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnNDButtonClick);
-    Panel2->Connect(wxEVT_PAINT,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2Paint1,0,this);
-    Panel2->Connect(wxEVT_LEFT_DCLICK,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2LeftDoubleClick,0,this);
+
     Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnChoice1Select);
+    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnAddDancerButtonClick);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnQuit);
     Connect(idImportMusic,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnImportMusicSelected);
     Connect(idExportImage,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnExportImageSelected);
@@ -313,11 +322,13 @@ void FormationMediaPlayerFrame::DrawDot(std::shared_ptr<DancerDot>& dd){
     dc.SelectObject(wxNullBitmap);
 
     dd->d_area = new wxRect(*draw, wxPoint(draw->x+50, draw->y+50));
-    dd->d_P1bmp = new wxBitmap(dd->d_bmp->GetSubBitmap(wxRect(0,0, dd->d_bmp->GetWidth(), dd->d_bmp->GetHeight())));
-    dd->d_drag = new wxGenericDragImage(*dd->d_P1bmp);
-    wxClientDC pdc(Panel2);
-    pdc.DrawBitmap(*dd->d_bmp, *draw);
-    draw->y = draw->y + 60;
+    //dd->d_P1bmp = new wxBitmap(dd->d_bmp->GetSubBitmap(wxRect(0,0, dd->d_bmp->GetWidth(), dd->d_bmp->GetHeight())));
+    dd->d_drag = new wxGenericDragImage(*dd->d_bmp);
+
+    BitmapComboBox1->Append(dd->d_name, *dd->d_bmp);
+    //wxClientDC pdc(Panel2);
+    //pdc.DrawBitmap(*dd->d_bmp, *draw);
+    //draw->y = draw->y + 60;
 }
 
 void FormationMediaPlayerFrame::OnPanel2Paint(wxPaintEvent& event)
@@ -416,7 +427,7 @@ void FormationMediaPlayerFrame::OnPanel2LeftDoubleClick(wxMouseEvent& event)
 
     wxClientDC p1dc(Panel1);
     if(DragPointer != NULL && !(DragPointer->DrawnOnP1)){
-        p1dc.DrawBitmap(*DragPointer->d_P1bmp, *draw_panel1);
+        p1dc.DrawBitmap(*DragPointer->d_bmp, *draw_panel1);
         DragPointer->DrawnOnP1 = true;
         DragPointer->d_P1point = *draw_panel1;
         DragPointer->d_area_p1 = wxRect(DragPointer->d_P1point, wxPoint(DragPointer->d_P1point.x + 50, DragPointer->d_P1point.y + 50));
@@ -440,17 +451,6 @@ void FormationMediaPlayerFrame::OnTransitionModeSelected(wxCommandEvent& event)
     mode = TRANSITION_MODE;
 }
 
-void FormationMediaPlayerFrame::OnPanel2Paint1(wxPaintEvent& event)
-{
-    wxPoint drawPoint(30,30);
-    wxPaintDC pdc(Panel2);
-    for(auto &x : dancers){
-        pdc.DrawBitmap(*x->d_bmp, drawPoint);
-        drawPoint.y = drawPoint.y + 60;
-    }
-    event.Skip();
-
-}
 
 void FormationMediaPlayerFrame::OnNewFormationSelected(wxCommandEvent& event)
 {
@@ -586,5 +586,30 @@ void FormationMediaPlayerFrame::OnFileLoadSelected(wxCommandEvent& event)
     }
 
     file.close();
+
+}
+
+void FormationMediaPlayerFrame::OnAddDancerButtonClick(wxCommandEvent& event)
+{
+    DancerDot* DotPointer = NULL;
+    int x = BitmapComboBox1->GetSelection();
+    if(x != wxNOT_FOUND){
+        DotPointer = dancers.at(x).get();
+    }
+
+    wxClientDC p1dc(Panel1);
+    if(DotPointer != NULL && !(DotPointer->DrawnOnP1)){
+        p1dc.DrawBitmap(*DotPointer->d_bmp, *draw_panel1);
+        DotPointer->DrawnOnP1 = true;
+        DotPointer->d_P1point = *draw_panel1;
+        DotPointer->d_area_p1 = wxRect(DotPointer->d_P1point, wxPoint(DotPointer->d_P1point.x + 50, DotPointer->d_P1point.y + 50));
+        if(draw_panel1->y + 85 < Panel1->GetMinHeight()){
+            draw_panel1->y = draw_panel1->y + 50;
+        }else{
+            draw_panel1->y = 0;
+            draw_panel1->x = draw_panel1->x + 50;
+        }
+    }
+
 
 }
