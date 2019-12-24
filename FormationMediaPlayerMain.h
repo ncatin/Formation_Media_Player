@@ -17,6 +17,7 @@
 #include <wx/slider.h>
 #include <wx/panel.h>
 #include <wx/choice.h>
+#include <wx/bmpcbox.h>
 #include <wx/gbsizer.h>
 #include <wx/button.h>
 #include <wx/frame.h>
@@ -63,6 +64,8 @@ class FormationMediaPlayerFrame: public wxFrame
         void OnFileSaveSelected(wxCommandEvent& event);
         void OnSaveFormationSelected(wxCommandEvent& event);
         void OnFileLoadSelected(wxCommandEvent& event);
+        void OnBitmapComboBox1Select(wxCommandEvent& event);
+        void OnAddDancerButtonClick(wxCommandEvent& event);
         //*)
 
         //(*Identifiers(FormationMediaPlayerFrame)
@@ -73,8 +76,9 @@ class FormationMediaPlayerFrame: public wxFrame
         static const long ID_TEXTCTRL2;
         static const long ID_PANEL1;
         static const long ID_BUTTON3;
-        static const long ID_PANEL2;
+        static const long ID_BITMAPCOMBOBOX1;
         static const long ID_CHOICE1;
+        static const long ID_BUTTON4;
         static const long idMenuQuit;
         static const long idImportMusic;
         static const long idExportImage;
@@ -110,7 +114,9 @@ class FormationMediaPlayerFrame: public wxFrame
         //(*Declarations(FormationMediaPlayerFrame)
         wxSlider* Slider1;
         wxMenuItem* MenuItem8;
+        wxBitmapComboBox* BitmapComboBox1;
         wxMenuItem* MenuItem7;
+        wxButton* Button4;
         wxMenuItem* MenuItem5;
         wxMenu* Menu3;
         wxButton* Button1;
@@ -125,7 +131,6 @@ class FormationMediaPlayerFrame: public wxFrame
         wxMenuItem* MenuItem6;
         wxTextCtrl* TextCtrl2;
         wxTextCtrl* TextCtrl1;
-        wxPanel* Panel2;
         wxMenuItem* MenuItem9;
         wxChoice* Choice1;
         //*)
