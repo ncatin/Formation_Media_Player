@@ -21,7 +21,6 @@ public:
   }
 
   ~DancerDot(){
-      delete d_P1bmp;
       delete d_bmp;
       delete d_area;
       delete d_drag;
@@ -30,7 +29,6 @@ private:
   wxString d_name;
   wxColour d_color;
   wxBitmap* d_bmp;
-  wxBitmap* d_P1bmp;
   wxRect* d_area;
   wxRect d_area_p1;
   wxGenericDragImage* d_drag;
