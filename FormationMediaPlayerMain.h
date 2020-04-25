@@ -11,17 +11,17 @@
 #define FORMATIONMEDIAPLAYERMAIN_H
 
 //(*Headers(FormationMediaPlayerFrame)
-#include <wx/sizer.h>
-#include <wx/menu.h>
-#include <wx/textctrl.h>
-#include <wx/slider.h>
-#include <wx/panel.h>
-#include <wx/choice.h>
 #include <wx/bmpcbox.h>
-#include <wx/gbsizer.h>
 #include <wx/button.h>
+#include <wx/choice.h>
 #include <wx/frame.h>
+#include <wx/gbsizer.h>
+#include <wx/menu.h>
+#include <wx/panel.h>
+#include <wx/sizer.h>
+#include <wx/slider.h>
 #include <wx/statusbr.h>
+#include <wx/textctrl.h>
 //*)
 #include <wx/mediactrl.h>
 #include <memory>
@@ -66,6 +66,9 @@ class FormationMediaPlayerFrame: public wxFrame
         void OnFileLoadSelected(wxCommandEvent& event);
         void OnBitmapComboBox1Select(wxCommandEvent& event);
         void OnAddDancerButtonClick(wxCommandEvent& event);
+        void OnPanel1RightUp(wxMouseEvent& event);
+        void OnMenuItem12Selected(wxCommandEvent& event);
+        void OnBlankFormationSelected(wxCommandEvent& event);
         //*)
 
         //(*Identifiers(FormationMediaPlayerFrame)
@@ -84,11 +87,10 @@ class FormationMediaPlayerFrame: public wxFrame
         static const long idExportImage;
         static const long idSave;
         static const long idLoad;
-        static const long idMenuFormation;
-        static const long idMenuTransition ;
-        static const long ID_MENUITEM1;
         static const long idNewFormation;
         static const long idSaveFormation;
+        static const long idRemoveDancer;
+        static const long idBlankFormation;
         static const long idMenuAbout;
         static const long ID_STATUSBAR1;
         //*)
@@ -100,9 +102,9 @@ class FormationMediaPlayerFrame: public wxFrame
         wxPoint* draw_panel1;
         wxMediaCtrl* mediactrl1;
         int ConvertToTime(wxString time);
-        bool SliderDragged, loaded, mode, adding_transition;
+        bool SliderDragged, loaded, mode, blank_formation;
         std::fstream file;
-
+        DancerDot* Edit_Pointer;
         std::vector<std::shared_ptr<DancerDot>> dancers;
         void DrawDot(std::shared_ptr<DancerDot>& dd);
         void NewDancer();
@@ -112,27 +114,26 @@ class FormationMediaPlayerFrame: public wxFrame
         friend class DancerCreatorWindowFrame;
         friend class AddTransitionMenuFrame;
         //(*Declarations(FormationMediaPlayerFrame)
-        wxSlider* Slider1;
-        wxMenuItem* MenuItem8;
         wxBitmapComboBox* BitmapComboBox1;
-        wxMenuItem* MenuItem7;
-        wxButton* Button4;
-        wxMenuItem* MenuItem5;
-        wxMenu* Menu3;
         wxButton* Button1;
-        wxMenuItem* MenuItem11;
-        wxMenu* MenuItem4;
-        wxPanel* Panel1;
-        wxMenuItem* MenuItem10;
         wxButton* Button2;
-        wxMenuItem* MenuItem3;
         wxButton* Button3;
-        wxStatusBar* StatusBar1;
-        wxMenuItem* MenuItem6;
-        wxTextCtrl* TextCtrl2;
-        wxTextCtrl* TextCtrl1;
-        wxMenuItem* MenuItem9;
+        wxButton* Button4;
         wxChoice* Choice1;
+        wxMenu* Menu3;
+        wxMenuItem* MenuItem10;
+        wxMenuItem* MenuItem11;
+        wxMenuItem* MenuItem12;
+        wxMenuItem* MenuItem3;
+        wxMenuItem* MenuItem4;
+        wxMenuItem* MenuItem7;
+        wxMenuItem* MenuItem8;
+        wxMenuItem* MenuItem9;
+        wxPanel* Panel1;
+        wxSlider* Slider1;
+        wxStatusBar* StatusBar1;
+        wxTextCtrl* TextCtrl1;
+        wxTextCtrl* TextCtrl2;
         //*)
 
         DECLARE_EVENT_TABLE()
