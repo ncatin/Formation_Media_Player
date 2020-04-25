@@ -12,27 +12,24 @@ public:
       d_color = color;
       d_bmp = new wxBitmap(50, 50);
       DrawnOnP1 = false;
-      transition_select = false;
       d_P1point = wxDefaultPosition;
   }
 
   bool Contains(wxPoint pnt){
-      return (d_area->Contains(pnt) || d_area_p1.Contains(pnt));
+      return (d_area_p1.Contains(pnt) && (d_P1point != wxDefaultPosition));
   }
 
   ~DancerDot(){
       delete d_bmp;
-      delete d_area;
       delete d_drag;
   }
 private:
   wxString d_name;
   wxColour d_color;
   wxBitmap* d_bmp;
-  wxRect* d_area;
   wxRect d_area_p1;
   wxGenericDragImage* d_drag;
-  bool DrawnOnP1, transition_select;
+  bool DrawnOnP1;
   wxPoint d_P1point;
   std::vector<wxPoint> Transition_Points;
 
