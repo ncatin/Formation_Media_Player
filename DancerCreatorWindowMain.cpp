@@ -110,6 +110,7 @@ DancerCreatorWindowFrame::DancerCreatorWindowFrame(wxWindow* parent,wxWindowID i
 
 DancerCreatorWindowFrame::~DancerCreatorWindowFrame()
 {
+    delete frame_parent;
     //(*Destroy(DancerCreatorWindowFrame)
     //*)
 }
