@@ -28,8 +28,7 @@
 #include <wx/string.h>
 //*)
 
-#define FORMATION_MODE 0
-#define TRANSITION_MODE 1
+
 
 //helper functions
 enum wxbuildinfoformat {
@@ -73,11 +72,10 @@ const long FormationMediaPlayerFrame::idImportMusic = wxNewId();
 const long FormationMediaPlayerFrame::idExportImage = wxNewId();
 const long FormationMediaPlayerFrame::idSave = wxNewId();
 const long FormationMediaPlayerFrame::idLoad = wxNewId();
-const long FormationMediaPlayerFrame::idMenuFormation = wxNewId();
-const long FormationMediaPlayerFrame::idMenuTransition  = wxNewId();
-const long FormationMediaPlayerFrame::ID_MENUITEM1 = wxNewId();
 const long FormationMediaPlayerFrame::idNewFormation = wxNewId();
 const long FormationMediaPlayerFrame::idSaveFormation = wxNewId();
+const long FormationMediaPlayerFrame::idRemoveDancer = wxNewId();
+const long FormationMediaPlayerFrame::idBlankFormation = wxNewId();
 const long FormationMediaPlayerFrame::idMenuAbout = wxNewId();
 const long FormationMediaPlayerFrame::ID_STATUSBAR1 = wxNewId();
 //*)
@@ -91,14 +89,14 @@ END_EVENT_TABLE()
 FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID id)
 {
     //(*Initialize(FormationMediaPlayerFrame)
-    wxMenuItem* MenuItem2;
+    wxFlexGridSizer* FlexGridSizer1;
     wxGridBagSizer* GridBagSizer1;
     wxGridBagSizer* GridBagSizer2;
-    wxMenuItem* MenuItem1;
     wxMenu* Menu1;
-    wxMenuBar* MenuBar1;
-    wxFlexGridSizer* FlexGridSizer1;
     wxMenu* Menu2;
+    wxMenuBar* MenuBar1;
+    wxMenuItem* MenuItem1;
+    wxMenuItem* MenuItem2;
 
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     mediactrl1  =  new wxMediaCtrl();
@@ -114,7 +112,7 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
 
     draw = new wxPoint(30,30);
 
-    draw_panel1 = new wxPoint(0,0);
+    draw_panel1 = new wxPoint(1,1);
 
     choice = 0;
 
@@ -127,8 +125,6 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     FlexGridSizer1->AddGrowableCol(0);
     FlexGridSizer1->AddGrowableRow(1);
     GridBagSizer1 = new wxGridBagSizer(1, 1);
-    GridBagSizer1->AddGrowableCol(0);
-    GridBagSizer1->AddGrowableRow(0);
     Button1 = new wxButton(this, ID_BUTTON1, _("Play"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
     GridBagSizer1->Add(Button1, wxGBPosition(2, 0), wxDefaultSpan, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
     Button2 = new wxButton(this, ID_BUTTON2, _("Pause"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
@@ -154,6 +150,8 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     Button4 = new wxButton(this, ID_BUTTON4, _("Add Dancer"), wxDefaultPosition, wxSize(111,23), 0, wxDefaultValidator, _T("ID_BUTTON4"));
     GridBagSizer2->Add(Button4, wxGBPosition(2, 0), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     GridBagSizer1->Add(GridBagSizer2, wxGBPosition(0, 5), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    GridBagSizer1->AddGrowableCol(0);
+    GridBagSizer1->AddGrowableRow(0);
     FlexGridSizer1->Add(GridBagSizer1, 1, wxALL|wxEXPAND|wxFIXED_MINSIZE, 5);
     SetSizer(FlexGridSizer1);
     MenuBar1 = new wxMenuBar();
@@ -170,16 +168,15 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     Menu1->Append(MenuItem11);
     MenuBar1->Append(Menu1, _("&File"));
     Menu3 = new wxMenu();
-    MenuItem4 = new wxMenu();
-    MenuItem5 = new wxMenuItem(MenuItem4, idMenuFormation, _("Formation Mode"), wxEmptyString, wxITEM_RADIO);
-    MenuItem4->Append(MenuItem5);
-    MenuItem6 = new wxMenuItem(MenuItem4, idMenuTransition , _("Transistion Mode"), wxEmptyString, wxITEM_RADIO);
-    MenuItem4->Append(MenuItem6);
-    Menu3->Append(ID_MENUITEM1, _("Mode"), MenuItem4, wxEmptyString);
     MenuItem7 = new wxMenuItem(Menu3, idNewFormation, _("New Formation"), wxEmptyString, wxITEM_NORMAL);
     Menu3->Append(MenuItem7);
     MenuItem10 = new wxMenuItem(Menu3, idSaveFormation, _("Save Formation"), wxEmptyString, wxITEM_NORMAL);
     Menu3->Append(MenuItem10);
+    MenuItem12 = new wxMenuItem(Menu3, idRemoveDancer, _("Remove Dancer From Formation"), wxEmptyString, wxITEM_NORMAL);
+    Menu3->Append(MenuItem12);
+    MenuItem12->Enable(false);
+    MenuItem4 = new wxMenuItem(Menu3, idBlankFormation, _("New Blank Formation"), wxEmptyString, wxITEM_NORMAL);
+    Menu3->Append(MenuItem4);
     MenuBar1->Append(Menu3, _("Edit"));
     Menu2 = new wxMenu();
     MenuItem2 = new wxMenuItem(Menu2, idMenuAbout, _("About\tF1"), _("Show info about this application"), wxITEM_NORMAL);
@@ -202,6 +199,7 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnEnterTime);
     Panel1->Connect(wxEVT_PAINT,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2Paint,0,this);
     Panel1->Connect(wxEVT_LEFT_DOWN,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel2LeftDown,0,this);
+    Panel1->Connect(wxEVT_RIGHT_UP,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnPanel1RightUp,0,this);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnNDButtonClick);
 
     Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnChoice1Select);
@@ -211,10 +209,10 @@ FormationMediaPlayerFrame::FormationMediaPlayerFrame(wxWindow* parent,wxWindowID
     Connect(idExportImage,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnExportImageSelected);
     Connect(idSave,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnFileSaveSelected);
     Connect(idLoad,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnFileLoadSelected);
-    Connect(idMenuFormation,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnFormationModeSelected);
-    Connect(idMenuTransition ,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnTransitionModeSelected);
     Connect(idNewFormation,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnNewFormationSelected);
     Connect(idSaveFormation,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnSaveFormationSelected);
+    Connect(idRemoveDancer,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnMenuItem12Selected);
+    Connect(idBlankFormation,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnBlankFormationSelected);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&FormationMediaPlayerFrame::OnAbout);
     //*)
 }
@@ -226,6 +224,7 @@ FormationMediaPlayerFrame::~FormationMediaPlayerFrame()
     delete draw;
     delete draw_panel1;
     delete mediactrl1;
+    delete Edit_Pointer;
 }
 
 void FormationMediaPlayerFrame::OnQuit(wxCommandEvent& event)
@@ -321,21 +320,17 @@ void FormationMediaPlayerFrame::DrawDot(std::shared_ptr<DancerDot>& dd){
     dc.DrawText(dd->d_name, wxPoint(25 - (h/2),25 - (w/2)));
     dc.SelectObject(wxNullBitmap);
 
-    dd->d_area = new wxRect(*draw, wxPoint(draw->x+50, draw->y+50));
-    //dd->d_P1bmp = new wxBitmap(dd->d_bmp->GetSubBitmap(wxRect(0,0, dd->d_bmp->GetWidth(), dd->d_bmp->GetHeight())));
     dd->d_drag = new wxGenericDragImage(*dd->d_bmp);
 
     BitmapComboBox1->Append(dd->d_name, *dd->d_bmp);
-    //wxClientDC pdc(Panel2);
-    //pdc.DrawBitmap(*dd->d_bmp, *draw);
-    //draw->y = draw->y + 60;
+
 }
 
 void FormationMediaPlayerFrame::OnPanel2Paint(wxPaintEvent& event)
 {
     wxPaintDC pdc(Panel1);
     for(auto &x : dancers){
-        if(x->DrawnOnP1){
+        if(x->DrawnOnP1 && (x->d_P1point != wxDefaultPosition)){
             x->d_drag->DoDrawImage(pdc, x->d_P1point);
         }
     }
@@ -346,7 +341,10 @@ void FormationMediaPlayerFrame::OnPanel2Paint(wxPaintEvent& event)
 void FormationMediaPlayerFrame::NewDancer(){
     dancers.emplace_back(new DancerDot(*tempName, *tempColor));
     DrawDot(dancers.back());
-    //Refresh();
+    dancers.back()->Transition_Points.resize(choice, wxDefaultPosition);
+    /*for(int x = 0; x < choice; x++){
+        dancers.back()->Transition_Points[x] = wxDefaultPosition;
+    }*/
 }
 
 void FormationMediaPlayerFrame::OnPanel2LeftDown(wxMouseEvent& event)
@@ -363,106 +361,52 @@ void FormationMediaPlayerFrame::OnPanel2LeftDown(wxMouseEvent& event)
         }
     }
 
-    if(mode == TRANSITION_MODE){
-        if(DragPointer != NULL){
+    if(DragPointer != NULL){
+       DragPointer->d_drag->BeginDrag(wxPoint(0,0), Panel1, false);
+       DragPointer->d_drag->Hide();
+       while(wxGetMouseState().LeftIsDown()){
+            wxGetMousePosition(&mouseX, &mouseY);
+            pos.x = mouseX;
+            pos.y = mouseY;
+            pos = this->ScreenToClient(pos);
 
+            DragPointer->d_drag->Move(pos);
+            DragPointer->d_drag->Show();
+            counter++;
+            if(!(counter%10)) wxYieldIfNeeded();
 
-            Panel1->Refresh();
-            Panel1->Update();
-            sdc.SetBrush(*wxTRANSPARENT_BRUSH);
-            sdc.SetPen(wxPen(wxColour(246,255,0),3));
-            sdc.DrawRectangle(DragPointer->d_drag->GetImageRect(DragPointer->d_P1point));
-
-
-            }else if(DragPointer == NULL){
-            Panel1->Refresh();
-            Panel1->Update();
 
         }
-    }
+        DragPointer->d_drag->EndDrag();
+        DragPointer->d_P1point = this->ScreenToClient(wxGetMousePosition());
+        DragPointer->d_area_p1 = DragPointer->d_drag->GetImageRect(DragPointer->d_P1point);
+        /*if(Choice1->GetSelection() != wxNOT_FOUND){
+            DragPointer->Transition_Points[Choice1->GetSelection()] = DragPointer->d_P1point;
+        }*/
 
-    if(mode == FORMATION_MODE){
-        if(DragPointer != NULL){
-           DragPointer->d_drag->BeginDrag(wxPoint(0,0), Panel1, false);
-           DragPointer->d_drag->Hide();
-           while(wxGetMouseState().LeftIsDown()){
-                wxGetMousePosition(&mouseX, &mouseY);
-                pos.x = mouseX;
-                pos.y = mouseY;
-                pos = this->ScreenToClient(pos);
-
-                DragPointer->d_drag->Move(pos);
-                DragPointer->d_drag->Show();
-                counter++;
-                if(!(counter%10)) wxYieldIfNeeded();
+        Panel1->Refresh();
 
 
-            }
-            DragPointer->d_drag->EndDrag();
-            DragPointer->d_P1point = this->ScreenToClient(wxGetMousePosition());
-            DragPointer->d_area_p1 = DragPointer->d_drag->GetImageRect(DragPointer->d_P1point);
-            /*if(Choice1->GetSelection() != wxNOT_FOUND){
-                DragPointer->Transition_Points[Choice1->GetSelection()] = DragPointer->d_P1point;
-            }*/
-
-            Panel1->Refresh();
-
-
-         }
-    }
-
-
+     }
 }
-
-void FormationMediaPlayerFrame::OnPanel2LeftDoubleClick(wxMouseEvent& event)
-{
-
-   DancerDot* DragPointer = NULL;
-
-    for(auto x : dancers){
-        if(x->Contains(event.GetPosition())){
-            DragPointer = x.get();
-        }
-    }
-
-    wxClientDC p1dc(Panel1);
-    if(DragPointer != NULL && !(DragPointer->DrawnOnP1)){
-        p1dc.DrawBitmap(*DragPointer->d_bmp, *draw_panel1);
-        DragPointer->DrawnOnP1 = true;
-        DragPointer->d_P1point = *draw_panel1;
-        DragPointer->d_area_p1 = wxRect(DragPointer->d_P1point, wxPoint(DragPointer->d_P1point.x + 50, DragPointer->d_P1point.y + 50));
-        if(draw_panel1->y + 85 < Panel1->GetMinHeight()){
-            draw_panel1->y = draw_panel1->y + 50;
-        }else{
-            draw_panel1->y = 0;
-            draw_panel1->x = draw_panel1->x + 50;
-        }
-    }
-
-}
-
-void FormationMediaPlayerFrame::OnFormationModeSelected(wxCommandEvent& event)
-{
-    mode = FORMATION_MODE;
-}
-
-void FormationMediaPlayerFrame::OnTransitionModeSelected(wxCommandEvent& event)
-{
-    mode = TRANSITION_MODE;
-}
-
 
 void FormationMediaPlayerFrame::OnNewFormationSelected(wxCommandEvent& event)
 {
     AddTransitionMenuFrame* TransitionMenu = new AddTransitionMenuFrame(this);
     TransitionMenu->Show(true);
-
+    blank_formation = false;
 }
 
 void FormationMediaPlayerFrame::NewFormation(){
+
     for(auto &x : dancers){
-        x->Transition_Points.push_back(x->d_P1point);
+        if(!blank_formation){
+            x->Transition_Points.push_back(x->d_P1point);
+        }else{
+            x->Transition_Points.push_back(wxDefaultPosition);
+        }
     }
+
 
     Choice1->Append(Formation_Name);
     choice ++;
@@ -470,15 +414,19 @@ void FormationMediaPlayerFrame::NewFormation(){
 
 void FormationMediaPlayerFrame::OnChoice1Select(wxCommandEvent& event)
 {
+    Edit_Pointer = NULL;
     wxClientDC cdc(Panel1);
     cdc.Clear();
     for(auto &x : dancers){
-        //cdc.DrawBitmap(*x->d_P1bmp, x->Transition_Points[Choice1->GetSelection()]);
+        x->d_P1point = x->Transition_Points[Choice1->GetSelection()];
         if(x->Transition_Points[Choice1->GetSelection()] != wxDefaultPosition){
-                x->d_P1point = x->Transition_Points[Choice1->GetSelection()];
+            x->d_drag->DoDrawImage(cdc, x->d_P1point);
+            x->d_area_p1 = x->d_drag->GetImageRect(x->d_P1point);
+            x->DrawnOnP1 = true;
+        }else{
+            x->DrawnOnP1 = false;
         }
-        x->d_drag->DoDrawImage(cdc, x->d_P1point);
-        x->d_area_p1 = x->d_drag->GetImageRect(x->d_P1point);
+
     }
 }
 
@@ -501,17 +449,18 @@ void FormationMediaPlayerFrame::OnFileSaveSelected(wxCommandEvent& event)
 {
     std::string points;
 
-    wxFileDialog saveFileDialog(this, _("Save File"), "", "", "JSON files (*.json)|*.json", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+    wxFileDialog saveFileDialog(this, _("Save File"), "", "", "FMP files (*.FMP)|*.FMP", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 
     if(saveFileDialog.ShowModal() == wxID_CANCEL) return;
 
-    file.open(saveFileDialog.GetPath(),  std::fstream::in | std::fstream::out | std::fstream::trunc);
+    file.open(saveFileDialog.GetPath().fn_str(),  std::fstream::in | std::fstream::out | std::fstream::trunc);
 
     for(int b = 0; b < Choice1->GetCount(); b++){
             j.push_back(Choice1->GetString(b).ToStdString());
     }
 
     file << j << std::endl;
+    j.clear();
 
     for(auto &x : dancers){
         dd["name"] = x->d_name.ToStdString();
@@ -547,11 +496,11 @@ void FormationMediaPlayerFrame::OnFileLoadSelected(wxCommandEvent& event)
     int x, y;
     DancerDot* Dot_Pointer = NULL;
 
-     wxFileDialog loadFileDialog(this, _("Open File"), "", "", "JSON files (*.json)|*.json", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+     wxFileDialog loadFileDialog(this, _("Open File"), "", "", "FMP files (*.fmp)|*.fmp", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 
     if(loadFileDialog.ShowModal() == wxID_CANCEL) return;
 
-    std::ifstream read_file(loadFileDialog.GetPath());
+    std::ifstream read_file(loadFileDialog.GetPath().fn_str());
 
     //read_file.open(loadFileDialog.GetPath(),  std::fstream::in | std::fstream::out | std::fstream::trunc);
 
@@ -612,4 +561,53 @@ void FormationMediaPlayerFrame::OnAddDancerButtonClick(wxCommandEvent& event)
     }
 
 
+}
+
+void FormationMediaPlayerFrame::OnPanel1RightUp(wxMouseEvent& event)
+{
+
+    wxClientDC sdc(Panel1);
+
+    for(auto x : dancers){
+        if(x->Contains(event.GetPosition())){
+            Edit_Pointer = x.get();
+        }
+    }
+
+
+    if(Edit_Pointer != NULL){
+
+        Panel1->Refresh();
+        Panel1->Update();
+        sdc.SetBrush(*wxTRANSPARENT_BRUSH);
+        sdc.SetPen(wxPen(wxColour(246,255,0),3));
+        sdc.DrawRectangle(Edit_Pointer->d_drag->GetImageRect(Edit_Pointer->d_P1point));
+        MenuItem12->Enable();
+
+        }else if(Edit_Pointer == NULL){
+        //Panel1->Refresh();
+        //Panel1->Update();
+        MenuItem12->Enable(false);
+
+    }
+
+}
+
+void FormationMediaPlayerFrame::OnMenuItem12Selected(wxCommandEvent& event)
+{
+    if(Edit_Pointer != NULL && Choice1->GetSelection() != wxNOT_FOUND){
+        Edit_Pointer->Transition_Points[Choice1->GetSelection()] = wxDefaultPosition;
+        Edit_Pointer->d_P1point = wxDefaultPosition;
+        //Edit_Pointer->d_area_p1 = NULL;
+        Panel1->Refresh();
+        Panel1->Update();
+        Edit_Pointer = NULL;
+    }
+}
+
+void FormationMediaPlayerFrame::OnBlankFormationSelected(wxCommandEvent& event)
+{
+    AddTransitionMenuFrame* TransitionMenu = new AddTransitionMenuFrame(this);
+    TransitionMenu->Show(true);
+    blank_formation = true;
 }
